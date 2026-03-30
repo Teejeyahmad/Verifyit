@@ -1,0 +1,10 @@
+$kind: http-request
+name: Verify Product (Unit)
+method: GET
+url: '{{baseUrl}}/api/verify/:productId'
+order: 1000
+auth:
+  type: noauth
+pathVariables:
+  - key: productId
+    value: '{{productId}}'

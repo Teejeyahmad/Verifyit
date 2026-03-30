@@ -1,0 +1,10 @@
+$kind: http-request
+name: Verify Carton
+method: GET
+url: '{{baseUrl}}/api/verify/:productId/carton'
+order: 2000
+auth:
+  type: noauth
+pathVariables:
+  - key: productId
+    value: '{{productId}}'

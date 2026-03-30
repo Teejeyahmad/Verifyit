@@ -1,0 +1,26 @@
+$kind: http-request
+name: Update Profile
+method: PUT
+url: '{{baseUrl}}/api/auth/profile'
+order: 5000
+body:
+  type: formdata
+  content:
+    - key: name
+      type: text
+      value: ''
+    - key: mobile
+      type: text
+      value: ''
+    - key: cacNumber
+      type: text
+      value: ''
+    - key: nafdacNumber
+      type: text
+      value: ''
+    - key: ndleaNumber
+      type: text
+      value: ''
+    - key: profilePicture
+      type: file
+      src: ''

@@ -17,9 +17,8 @@ const sanitizeInput = (req, res, next) => {
       category,
       batch,
       expiryDate,
-    } = req.body;
-
-    if (params && !mongoose.isValidObjectId(params.productId)) {
+    } = req.body || {};
+    if (Object.keys(params).length && !mongoose.isValidObjectId(params.id)) {
       return res.status(400).json({
         verified: false,
         message: "Invalid QR code",
@@ -33,6 +32,7 @@ const sanitizeInput = (req, res, next) => {
       throw new LogicError("Invalid Mobile Number");
     next();
   } catch (error) {
+    console.log("FROM SANITZEINPUT: ", error);
     if (error instanceof LogicError)
       res.status(400).json({ error: error.message });
     else res.status(500).json({ error: "something went wrong" });

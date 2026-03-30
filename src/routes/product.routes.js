@@ -11,16 +11,22 @@ const { uploadProductImages } = require("../config/cloudinary");
 
 const productRoutes = express.Router();
 
-productRoutes.use(sanitizeInput, authenticate);
+productRoutes.use(authenticate);
 
-productRoutes.post("/", uploadProductImages.array("images", 5), addProduct);
+productRoutes.post(
+  "/",
+  uploadProductImages.array("images", 5),
+  sanitizeInput,
+  addProduct,
+);
 productRoutes.get("/", getProducts);
-productRoutes.get("/:id", getProduct);
-productRoutes.put(
+productRoutes.get("/:id", sanitizeInput, getProduct);
+productRoutes.patch(
   "/:id",
   uploadProductImages.array("images", 5),
+  sanitizeInput,
   updateProduct,
 );
-productRoutes.delete("/:id", deleteProduct);
+productRoutes.delete("/:id", sanitizeInput, deleteProduct);
 
 module.exports = productRoutes;

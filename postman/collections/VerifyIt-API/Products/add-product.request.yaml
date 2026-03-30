@@ -1,0 +1,41 @@
+$kind: http-request
+name: Add Product
+method: POST
+url: "{{baseUrl}}/api/products"
+order: 1000
+body:
+  type: formdata
+  content:
+    - type: text
+      key: name
+      value: ""
+      disabled: false
+    - type: text
+      key: description
+      value: ""
+      disabled: false
+    - type: text
+      key: category
+      value: ""
+      disabled: false
+    - type: text
+      key: batch
+      value: ""
+      disabled: false
+    - type: text
+      key: expiryDate
+      value: 2027-12-31
+      disabled: false
+    - type: text
+      key: nafdacNumber
+      value: ""
+      disabled: false
+    - type: text
+      key: ndleaNumber
+      value: ""
+      disabled: false
+    - type: file
+      key: images
+      src:
+        - ""
+      disabled: false

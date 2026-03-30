@@ -1,0 +1,43 @@
+$kind: http-request
+name: Register Business
+method: POST
+url: "{{baseUrl}}/api/auth/register"
+order: 1000
+auth:
+  type: noauth
+body:
+  type: formdata
+  content:
+    - type: text
+      key: name
+      value: coke
+      disabled: false
+    - type: text
+      key: email
+      value: cokes@gmail.com
+      disabled: false
+    - type: text
+      key: password
+      value: Pass@123
+      disabled: false
+    - type: text
+      key: mobile
+      value: "08012345678"
+      disabled: false
+    - type: text
+      key: cacNumber
+      value: ""
+      disabled: false
+    - type: text
+      key: nafdacNumber
+      value: ""
+      disabled: false
+    - type: text
+      key: ndleaNumber
+      value: ""
+      disabled: false
+    - type: file
+      key: profilePicture
+      src:
+        - ""
+      disabled: true

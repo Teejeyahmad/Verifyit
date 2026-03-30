@@ -1,12 +1,26 @@
 const { BusinessModel, BlacklistedToken } = require("../models");
+require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 //creating new error interface for logic errors
+const tokenExpiresIn = 60;
 class LogicError extends Error {}
 
-const generateToken = (businessId) => {
-  return jwt.sign({ businessId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+const generate_and_send_token = (
+  responseBody,
+  businessId,
+  expiryDateInMins,
+) => {
+  let token = jwt.sign({ businessId }, process.env.JWT_SECRET, {
+    expiresIn: expiryDateInMins * 60,
+  });
+  responseBody.cookie("token", token, {
+    httpOnly: true, // Prevents JavaScript access (XSS protection)
+    secure: false, // Set to true in production (requires HTTPS)
+    sameSite: "strict", // Prevents CSRF
+    maxAge: expiryDateInMins * 60 * 1000, // 10 mins in milliseconds
+  });
 };
 
 const register = async (req, res) => {
@@ -43,11 +57,10 @@ const register = async (req, res) => {
     // // Calculate initial Trust Score
     // await calculateTrustScore(business._id);
 
-    const token = generateToken(business._id);
+    generate_and_send_token(res, business._id, tokenExpiresIn);
 
     res.status(201).json({
       message: "BusinessModel registered successfully",
-      token,
       business: {
         id: business._id,
         name: business.name,
@@ -60,6 +73,7 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log("FROM REGISTER: ", error);
     if (error instanceof LogicError)
       res.status(400).json({ error: error.message });
     else res.status(500).json({ error: "something went wrong" });
@@ -76,11 +90,10 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, business.password);
     if (!isMatch) throw new LogicError("Invalid email or password");
 
-    const token = generateToken(business._id);
+    generate_and_send_token(res, business._id, tokenExpiresIn);
 
     res.json({
       message: "Login successful",
-      token,
       business: {
         id: business._id,
         name: business.name,
@@ -93,6 +106,7 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log("FROM LOGIN: ", error);
     if (error instanceof LogicError)
       res.status(401).json({ error: error.message });
     else res.status(500).json({ error: "something went wrong" });
@@ -104,10 +118,25 @@ const getMe = async (req, res) => {
     const business = await BusinessModel.findById(req.businessId).select(
       "-password",
     );
+    if (!business) throw new Error();
     res.json({ business });
   } catch (error) {
+    console.log("FROM GETME: ", error);
     res.status(500).json({ error: "Something went wrong" });
   }
+};
+const changePassword = async (req, res) => {
+  try {
+    const { newPassword, confirmPassword } = req.body;
+    if (newPassword !== confirmPassword)
+      return res.status(400).json({ error: "Password doesn't match" });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await BusinessModel.findByIdAndUpdate(req.businessId, {
+      password: hashedPassword,
+    });
+    res.json({ message: "password updated successfully!!" });
+  } catch (error) {}
 };
 
 const updateProfile = async (req, res) => {
@@ -124,35 +153,40 @@ const updateProfile = async (req, res) => {
         returnDocument: "after",
       },
     ).select("-password");
-
+    if (!business) throw new Error();
     // await calculateTrustScore(req.businessId);
 
     res.json({ message: "Profile updated", business });
   } catch (error) {
+    console.log("FROM UPDATE PROFILE: ", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
 
 const logout = async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader.split(" ")[1];
+    const token = req.cookies?.token;
 
-    // Decode the token to get its expiry time
-    // We don't need to verify here — we already did that in protect middleware
-    const decoded = jwt.decode(token);
-
-    // Store the token in the blacklist until it naturally expires
-    await BlacklistedToken.create({
-      token,
-      expiresAt: new Date(decoded.exp * 1000), // JWT exp is in seconds, convert to ms
-    });
-
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      await BlacklistedToken.create({
+        token,
+        expiresAt: new Date(decoded.exp * 1000), // JWT exp is in seconds, convert to ms
+      });
+    }
+    res.clearCookie("token");
     res.json({ message: "Logged out successfully" });
   } catch (error) {
-    console.error(error);
+    console.log("FROM LOGOUT", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
 
-module.exports = { register, login, getMe, updateProfile, logout };
+module.exports = {
+  register,
+  login,
+  getMe,
+  updateProfile,
+  logout,
+  changePassword,
+};

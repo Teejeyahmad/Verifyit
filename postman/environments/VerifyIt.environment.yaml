@@ -1,0 +1,22 @@
+name: VerifyIt
+values:
+  - key: baseUrl
+    value: 'http://localhost:5000'
+    enabled: true
+    type: default
+  - key: token
+    value: ''
+    enabled: true
+    type: secret
+  - key: email
+    value: ''
+    enabled: true
+    type: default
+  - key: password
+    value: ''
+    enabled: true
+    type: default
+  - key: productId
+    value: ''
+    enabled: true
+    type: default

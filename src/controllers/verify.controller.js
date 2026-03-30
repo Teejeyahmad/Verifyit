@@ -2,7 +2,7 @@ const { ProductModel, ScanModel } = require("../models");
 
 const verifyProduct = async (req, res) => {
   try {
-    const product = await ProductModel.findById(req.params.productId).populate(
+    const product = await ProductModel.findById(req.params.id).populate(
       "business",
       "name email cacNumber nafdacNumber",
     );
@@ -22,14 +22,13 @@ const verifyProduct = async (req, res) => {
       qrType: "unit",
       userAgent: req.headers["user-agent"],
     });
-
+    product.prevScannedAt = new Date();
     product.scanCount += 1;
     if (isFirstScan) product.firstScannedAt = new Date();
     await product.save();
 
     res.json({
       verified: true,
-      isFirstScan,
       message: isFirstScan
         ? "Product verified successfully."
         : `This product was first scanned on ${product.firstScannedAt.toDateString()}. Ensure the seal was intact.`,
@@ -57,7 +56,7 @@ const verifyProduct = async (req, res) => {
 
 const verifyCarton = async (req, res) => {
   try {
-    const product = await ProductModel.findById(req.params.productId).populate(
+    const product = await ProductModel.findById(req.params.id).populate(
       "business",
       "name cacNumber",
     );
@@ -88,6 +87,7 @@ const verifyCarton = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };

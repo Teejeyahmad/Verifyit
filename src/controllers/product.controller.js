@@ -1,4 +1,4 @@
-const ProductModel = require("../models");
+const { ProductModel } = require("../models");
 const QRCode = require("qrcode");
 //const { calculateTrustScore } = require("../services/trustScore.service");
 
@@ -44,7 +44,7 @@ const addProduct = async (req, res) => {
 
     res.status(201).json({ message: "Product created", product });
   } catch (error) {
-    console.error(error);
+    console.log("FROM ADDPRODUCT: ", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -56,8 +56,14 @@ const getProducts = async (req, res) => {
         createdAt: -1,
       },
     );
+    if (!products.length)
+      return res
+        .status(200)
+        .json({ message: "You don't have any product yet!" });
+
     res.json({ products });
   } catch (error) {
+    console.log("FROM GETPRODUCTSSS: ", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -71,6 +77,7 @@ const getProduct = async (req, res) => {
     if (!product) return res.status(404).json({ error: "Product not found" });
     res.json({ product });
   } catch (error) {
+    console.log("FORM GETPRODUCT: ", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -112,6 +119,7 @@ const updateProduct = async (req, res) => {
 
     res.json({ message: "Product updated", product: updated });
   } catch (error) {
+    console.log("FROM UPDATEPRODUCT: ", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -127,6 +135,7 @@ const deleteProduct = async (req, res) => {
     await product.deleteOne();
     res.json({ message: "Product deleted" });
   } catch (error) {
+    console.log("FROM DELETEPRODUCT", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };

@@ -4,6 +4,7 @@ const {
   getMe,
   updateProfile,
   logout,
+  changePassword,
 } = require("./auth.controller");
 const {
   addProduct,
@@ -27,4 +28,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   logout,
+  changePassword,
 };

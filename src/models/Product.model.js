@@ -12,6 +12,7 @@ const productSchema = new mongoose.Schema(
     description: { type: String, trim: true, maxLength: 500 },
     category: {
       type: String,
+      lowercase: true,
       enum: ["drug", "food", "cosmetic", "supplement", "other"],
       default: "other",
     },
@@ -20,10 +21,11 @@ const productSchema = new mongoose.Schema(
     nafdacNumber: { type: String, trim: true, maxLength: 50 },
     ndleaNumber: { type: String, trim: true, maxLength: 50 },
     images: [{ type: String }],
-    unitQrCode: { type: String, trim: true, maxLength: 100 },
-    cartonQrCode: { type: String, trim: true, maxLength: 100 },
+    unitQrCode: { type: String, trim: true },
+    cartonQrCode: { type: String, trim: true },
     scanCount: { type: Number, default: 0 },
     firstScannedAt: { type: Date, default: null },
+    prevScannedAt: { type: Date, default: null },
     business: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Business",

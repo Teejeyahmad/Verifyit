@@ -5,27 +5,27 @@ const {
   getMe,
   updateProfile,
   logout,
+  changePassword,
 } = require("../controllers");
 const { authenticate, sanitizeInput } = require("../middleware");
 const { uploadProfilePicture } = require("../config/cloudinary");
-
 const authRoutes = express.Router();
-
-authRoutes.use(sanitizeInput);
 
 authRoutes.post(
   "/register",
   uploadProfilePicture.single("profilePicture"),
+  sanitizeInput,
   register,
 );
 authRoutes.post("/login", login);
 authRoutes.get("/dashboard", authenticate, getMe);
-authRoutes.put(
+authRoutes.patch(
   "/profile",
   authenticate,
   uploadProfilePicture.single("profilePicture"),
   updateProfile,
 );
-authRoutes.post("/logout", authenticate, logout); // protect runs first to validate token
+authRoutes.patch("/password", authenticate, changePassword);
+authRoutes.post("/logout", authenticate, logout);
 
 module.exports = authRoutes;

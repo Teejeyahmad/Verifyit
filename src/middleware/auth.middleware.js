@@ -1,14 +1,16 @@
 const jwt = require("jsonwebtoken");
 const { BlacklistedToken } = require("../models");
+require("dotenv").config();
 
 const authenticate = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const token = req.cookies?.token;
+  // const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!token) {
     return res.status(401).json({ error: "Not authenticated. Please login." });
   }
 
-  const token = authHeader.split(" ")[1];
+  // const token = authHeader.split(" ")[1];
 
   try {
     // Check if token has been blacklisted (user already logged out)
@@ -24,6 +26,7 @@ const authenticate = async (req, res, next) => {
     req.businessId = decoded.businessId;
     next();
   } catch (error) {
+    console.log("FROM AUTHENTICATE: ", error);
     res
       .status(401)
       .json({ error: "Invalid or expired token. Please login again." });

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 
 const businessSchema = new mongoose.Schema(
   {
@@ -32,8 +31,8 @@ const businessSchema = new mongoose.Schema(
     cacVerified: { type: Boolean, default: false },
     nafdacNumber: { type: String, trim: true, default: "" },
     ndleaNumber: { type: String, trim: true, default: "" },
-    trustScore: { type: Number, default: 0 },
-    isPremium: { type: Boolean, default: false },
+    // trustScore: { type: Number, default: 0 },
+    // isPremium: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
