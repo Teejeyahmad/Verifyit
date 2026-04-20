@@ -4,8 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 //creating new error interface for logic errors
-const tokenExpiresIn = 60;
 class LogicError extends Error {}
+const tokenExpiresIn = 60;
 
 const generate_and_send_token = (
   responseBody,
@@ -19,7 +19,7 @@ const generate_and_send_token = (
     httpOnly: true, // Prevents JavaScript access (XSS protection)
     secure: false, // Set to true in production (requires HTTPS)
     sameSite: "strict", // Prevents CSRF
-    maxAge: expiryDateInMins * 60 * 1000, // 10 mins in milliseconds
+    maxAge: expiryDateInMins * 60 * 1000, // mins in milliseconds
   });
 };
 
@@ -142,18 +142,27 @@ const changePassword = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const { name, mobile, cacNumber, nafdacNumber, ndleaNumber } = req.body;
+
     const updates = { name, mobile, cacNumber, nafdacNumber, ndleaNumber };
 
-    if (req.file) updates.profilePicture = req.file.path;
+    const allowedUpdates = Object.fromEntries(
+      Object.entries(updates).filter(
+        ([Key, value]) => value !== "" && value !== undefined && value != null,
+      ),
+    );
 
+    if (req.file) allowedUpdates.profilePicture = req.file.path;
+    console.log(allowedUpdates);
     const business = await BusinessModel.findByIdAndUpdate(
       req.businessId,
-      updates,
+      allowedUpdates,
       {
         returnDocument: "after",
       },
     ).select("-password");
+
     if (!business) throw new Error();
+
     // await calculateTrustScore(req.businessId);
 
     res.json({ message: "Profile updated", business });

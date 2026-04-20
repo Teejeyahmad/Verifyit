@@ -7,22 +7,22 @@ const {
   logout,
   changePassword,
 } = require("../controllers");
-const { authenticate, sanitizeInput } = require("../middleware");
-const { uploadProfilePicture } = require("../config/cloudinary");
+
+const {
+  authenticate,
+  sanitizeInput,
+  handleProfilePicUpload,
+} = require("../middleware");
+
 const authRoutes = express.Router();
 
-authRoutes.post(
-  "/register",
-  uploadProfilePicture.single("profilePicture"),
-  sanitizeInput,
-  register,
-);
+authRoutes.post("/register", handleProfilePicUpload, sanitizeInput, register);
 authRoutes.post("/login", login);
 authRoutes.get("/dashboard", authenticate, getMe);
 authRoutes.patch(
   "/profile",
   authenticate,
-  uploadProfilePicture.single("profilePicture"),
+  handleProfilePicUpload,
   updateProfile,
 );
 authRoutes.patch("/password", authenticate, changePassword);

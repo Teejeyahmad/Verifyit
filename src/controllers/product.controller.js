@@ -90,6 +90,8 @@ const updateProduct = async (req, res) => {
     });
     if (!product) return res.status(404).json({ error: "Product not found" });
 
+    const newImages = req.files ? req.files.map((f) => f.path) : [];
+
     const {
       name,
       description,
@@ -99,21 +101,25 @@ const updateProduct = async (req, res) => {
       nafdacNumber,
       ndleaNumber,
     } = req.body;
-    const newImages = req.files ? req.files.map((f) => f.path) : [];
+    const updates = {
+      name,
+      description,
+      category,
+      batch,
+      expiryDate: expiryDate ? new Date(expiryDate) : undefined,
+      nafdacNumber,
+      ndleaNumber,
+      images: [...product.images, ...newImages],
+    };
+    const allowedUpdates = Object.fromEntries(
+      Object.entries(updates).filter(
+        ([Key, value]) => value !== "" && value !== undefined && value != null,
+      ),
+    );
 
     const updated = await ProductModel.findByIdAndUpdate(
       req.params.id,
-      {
-        name,
-        description,
-        category,
-        batch,
-        expiryDate: expiryDate ? new Date(expiryDate) : undefined,
-        nafdacNumber,
-        ndleaNumber,
-        // Append new images to existing ones
-        images: [...product.images, ...newImages],
-      },
+      allowedUpdates,
       { returnDocument: "after" },
     );
 

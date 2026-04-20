@@ -20,7 +20,7 @@ const verifyProduct = async (req, res) => {
     await ScanModel.create({
       product: product._id,
       qrType: "unit",
-      userAgent: req.headers["user-agent"],
+      userAgent: req.headers["user-agent"]?.substring(0, 100),
     });
     product.prevScannedAt = new Date();
     product.scanCount += 1;
@@ -33,6 +33,7 @@ const verifyProduct = async (req, res) => {
         ? "Product verified successfully."
         : `This product was first scanned on ${product.firstScannedAt.toDateString()}. Ensure the seal was intact.`,
       product: {
+        scanCount: product.scanCount,
         name: product.name,
         description: product.description,
         category: product.category,
@@ -42,6 +43,8 @@ const verifyProduct = async (req, res) => {
         images: product.images,
         registeredBy: product.business.name,
         cacNumber: product.business.cacNumber,
+        prevScannedAt: product.prevScannedAt,
+        createdAt: product.createdAt,
       },
     });
   } catch (error) {
@@ -50,6 +53,7 @@ const verifyProduct = async (req, res) => {
         .status(400)
         .json({ verified: false, message: "Invalid QR code" });
     }
+    console.log("FROM VERIFYPRODUCT: ", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -72,7 +76,7 @@ const verifyCarton = async (req, res) => {
     await ScanModel.create({
       product: product._id,
       qrType: "carton",
-      userAgent: req.headers["user-agent"],
+      userAgent: req.headers["user-agent"]?.substring(0, 100),
     });
 
     res.json({

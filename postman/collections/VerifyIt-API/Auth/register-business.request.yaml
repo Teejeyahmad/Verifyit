@@ -38,6 +38,5 @@ body:
       disabled: false
     - type: file
       key: profilePicture
-      src:
-        - ""
+      src: ''
       disabled: true

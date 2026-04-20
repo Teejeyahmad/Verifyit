@@ -6,27 +6,27 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers");
-const { authenticate, sanitizeInput } = require("../middleware");
-const { uploadProductImages } = require("../config/cloudinary");
+
+const {
+  authenticate,
+  sanitizeInput,
+  handleProductImageUpload,
+} = require("../middleware");
 
 const productRoutes = express.Router();
 
 productRoutes.use(authenticate);
 
-productRoutes.post(
-  "/",
-  uploadProductImages.array("images", 5),
-  sanitizeInput,
-  addProduct,
-);
+productRoutes.post("/", handleProductImageUpload, sanitizeInput, addProduct);
 productRoutes.get("/", getProducts);
 productRoutes.get("/:id", sanitizeInput, getProduct);
 productRoutes.patch(
   "/:id",
-  uploadProductImages.array("images", 5),
+  handleProductImageUpload,
   sanitizeInput,
   updateProduct,
 );
+
 productRoutes.delete("/:id", sanitizeInput, deleteProduct);
 
 module.exports = productRoutes;
