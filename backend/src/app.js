@@ -22,11 +22,11 @@ app.use(cookie());
 
 require("./config/database");
 
-app.use("/api/auth", authRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/verify", verifyRoutes);
+app.use("/auth", authRoutes);
+app.use("/products", productRoutes);
+app.use("/verify", verifyRoutes);
 
-app.get("/", (req, res, next) => {
+app.get("/test", (req, res, next) => {
   res.json({ message: "✅ VerifyIt API is running" });
 });
 module.exports = { app };
