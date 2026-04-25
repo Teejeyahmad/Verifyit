@@ -13,6 +13,7 @@ app.use(
       "http://localhost:5173",
       "https://verifyit-n8gh.vercel.app",
       "https://verifyit-enk9.vercel.app",
+      "https://verifyit.up.railway.app",
     ], // Replace with your frontend's URL
     credentials: true,
   }),
