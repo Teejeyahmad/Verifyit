@@ -30,10 +30,10 @@ const addProduct = async (req, res) => {
 
     const baseUrl = process.env.BASE_URL;
     const unitQrCode = await QRCode.toDataURL(
-      `${baseUrl}/verify/${product._id}`,
+      `${baseUrl}/api/verify/${product._id}`,
     );
     const cartonQrCode = await QRCode.toDataURL(
-      `${baseUrl}/verify/${product._id}/carton`,
+      `${baseUrl}/api/verify/${product._id}/carton`,
     );
 
     product.unitQrCode = unitQrCode;
