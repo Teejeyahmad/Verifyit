@@ -17,7 +17,7 @@ const generate_and_send_token = (
   });
   responseBody.cookie("token", token, {
     httpOnly: true, // Prevents JavaScript access (XSS protection)
-    secure: true, // Set to true in production (requires HTTPS)
+    secure: false, // Set to true in production (requires HTTPS)
     sameSite: "none", // Prevents CSRF
     maxAge: expiryDateInMins * 60 * 1000, // mins in milliseconds
   });
@@ -152,7 +152,7 @@ const updateProfile = async (req, res) => {
     );
 
     if (req.file) allowedUpdates.profilePicture = req.file.path;
-    console.log(allowedUpdates);
+
     const business = await BusinessModel.findByIdAndUpdate(
       req.businessId,
       allowedUpdates,

@@ -1,4 +1,5 @@
 const cloudinary = require("cloudinary").v2;
+const { BusinessModel } = require("../models");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
@@ -12,8 +13,10 @@ cloudinary.config({
 const productStorage = new CloudinaryStorage({
   cloudinary,
   params: (req, file) => {
+    req._cloudinaryIndex = (req._cloudinaryIndex || 0) + 1;
+    const index = req._cloudinaryIndex;
     const identifier = req.businessId;
-    const publicId = `${identifier}_product`;
+    const publicId = `${identifier}_product_${index}`;
 
     return {
       upload_preset: "product_preset",
@@ -25,9 +28,12 @@ const productStorage = new CloudinaryStorage({
 // Profile picture storage config
 const profileStorage = new CloudinaryStorage({
   cloudinary,
-  params: (req, file) => {
+  params: async (req, file) => {
     // const identifier = req.body.email.replace(/[@.]/g, "_");
-    const identifier = req.businessId;
+    const business = await BusinessModel.findById(req.businessId);
+    const identifier =
+      business?.email?.replace(/[@.]/g, "_") ||
+      req.body.email.replace(/[@.]/g, "_");
     const publicId = `${identifier}_profile`;
     return {
       upload_preset: "profile_preset",
