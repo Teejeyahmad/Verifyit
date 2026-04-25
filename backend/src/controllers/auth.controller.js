@@ -17,7 +17,7 @@ const generate_and_send_token = (
   });
   responseBody.cookie("token", token, {
     httpOnly: true, // Prevents JavaScript access (XSS protection)
-    secure: true, // Set to true in production (requires HTTPS)
+    secure: process.env.RAILWAY_ENVIRONMENT_NAME === "production", // Set to true in production (requires HTTPS)
     sameSite: "none", // Prevents CSRF
     maxAge: expiryDateInMins * 60 * 1000, // mins in milliseconds
   });
