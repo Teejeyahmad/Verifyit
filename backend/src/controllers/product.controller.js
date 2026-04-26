@@ -28,12 +28,12 @@ const addProduct = async (req, res) => {
       business: req.businessId,
     });
 
-    const frontend_URL = process.env.frontend_URL;
+    const frontendURL = process.env.Frontend_URL;
     const unitQrCode = await QRCode.toDataURL(
-      `${frontend_URL}/verify/${product._id}`,
+      `${frontendURL}/verify/${product._id}`,
     );
     const cartonQrCode = await QRCode.toDataURL(
-      `${frontend_URL}/verify/${product._id}/carton`,
+      `${frontendURL}/verify/${product._id}/carton`,
     );
 
     product.unitQrCode = unitQrCode;
