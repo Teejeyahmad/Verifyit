@@ -13,7 +13,7 @@ const playBeep = () => {
     gain.connect(ctx.destination);
 
     osc.type = "sine";
-    osc.frequency.value = 1046; // C6 — clean high beep
+    osc.frequency.value = 2046; // C6 — clean high beep
 
     gain.gain.setValueAtTime(0.4, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);

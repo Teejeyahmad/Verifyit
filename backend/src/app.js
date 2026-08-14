@@ -3,15 +3,16 @@ const cors = require("cors");
 require("dotenv").config();
 const cookie = require("cookie-parser");
 const scanRoutes = require("./routes/scan.routes");
-const displayRoutes = require("./routes/display.routes");
 
 const { authRoutes, productRoutes, verifyRoutes } = require("./routes");
+const displayRoutes = require("./routes/display.routes");
 
 const app = express();
 
 app.use(
   cors({
     origin: [
+      "http://10.125.252.46:5173",
       "http://localhost:5173",
       "https://verifyit-n8gh.vercel.app",
       "https://verifyit-enk9.vercel.app",

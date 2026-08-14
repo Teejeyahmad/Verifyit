@@ -29,11 +29,11 @@ const InfoRow = ({ icon: Icon, label, value }) => (
 export default function Verify() {
   const { productId } = useParams();
   const [result, setResult] = useState(null);
-  console.log(result);
   const [loading, setLoading] = useState(true);
   const isCarton = window.location.pathname.includes("/carton");
 
   useEffect(() => {
+    console.log("from VERIFYproductId : ", productId);
     api
       .get(isCarton ? `/verify/${productId}/carton` : `/verify/${productId}`)
       .then((r) => setResult(r.data))
