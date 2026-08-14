@@ -1,3 +1,5 @@
+import QRScanner from "../components/QRScanner";
+import { useQRScan } from "../hooks/useQRScan";
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
@@ -26,6 +28,8 @@ export default function Dashboard() {
   const [products, setProducts] = useState([]);
   const [trustData, setTrustData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { handleScan } = useQRScan();
+  const [scanning, setScanning] = useState(false);
 
   useEffect(() => {
     api
@@ -45,20 +49,34 @@ export default function Dashboard() {
         title={`Good day, ${business?.name?.split(" ")[0]} 👋`}
         subtitle="Here's what's happening with your products"
         action={
-          products.length !== 0 ? (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setScanning(true)}
+              className="btn-secondary text-xs sm:text-sm px-3 sm:px-4"
+            >
+              <ScanLine size={15} /> Scan QR
+            </button>
             <Link
               to="/products/add"
               className="btn-primary text-xs sm:text-sm px-3 sm:px-5"
             >
-              <Plus size={15} />{" "}
+              <Plus size={15} />
               <span className="hidden sm:inline">Add Product</span>
               <span className="sm:hidden">Add</span>
             </Link>
-          ) : (
-            ""
-          )
+          </div>
         }
       />
+      {/* Scanner */}
+      {scanning && (
+        <QRScanner
+          onScan={(text) => {
+            setScanning(false);
+            handleScan(text);
+          }}
+          onClose={() => setScanning(false)}
+        />
+      )}
 
       {loading ? (
         <Loader />

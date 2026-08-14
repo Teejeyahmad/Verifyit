@@ -1,4 +1,4 @@
-const { ProductModel, ScanModel } = require("../models");
+const { ProductModel, ScanModel, DisplayQueueModel } = require("../models");
 
 const verifyProduct = async (req, res) => {
   try {
@@ -26,6 +26,15 @@ const verifyProduct = async (req, res) => {
     product.scanCount += 1;
     if (isFirstScan) product.firstScannedAt = new Date();
     await product.save();
+    // Save to display queue so ESP32 can pick it up
+    // Fire and forget — don't await, don't block the response
+    DisplayQueueModel.create({
+      productName: product.name,
+      registeredBy: product.business.name,
+      isFirstScan,
+      isCarton: false, // true in verifyCarton
+      scannedAt: new Date(),
+    }).catch((err) => console.error("DisplayQueue save failed:", err));
 
     res.json({
       verified: true,
@@ -78,6 +87,13 @@ const verifyCarton = async (req, res) => {
       qrType: "carton",
       userAgent: req.headers["user-agent"]?.substring(0, 100),
     });
+    // Save to display queue so ESP32 can pick it up
+    // Fire and forget — don't await, don't block the response
+    DisplayQueueModel.create({
+      productName: product.name,
+      registeredBy: product.business.name,
+      isCarton: true, // true in verifyCarton
+    }).catch((err) => console.error("DisplayQueue save failed:", err));
 
     res.json({
       verified: true,

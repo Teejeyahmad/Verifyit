@@ -15,11 +15,18 @@ const generate_and_send_token = (
   let token = jwt.sign({ businessId }, process.env.JWT_SECRET, {
     expiresIn: expiryDateInMins * 60,
   });
+
+  // In production (cross-site, HTTPS) we need SameSite=None and Secure=true.
+  // In local development on http://localhost, browsers will reject SameSite=None
+  // cookies unless Secure is true (HTTPS). Use 'lax' for dev to allow cookie
+  // on localhost without HTTPS.
+  const isProd = process.env.RAILWAY_ENVIRONMENT_NAME === "production";
+
   responseBody.cookie("token", token, {
-    httpOnly: true, // Prevents JavaScript access (XSS protection)
-    secure: process.env.RAILWAY_ENVIRONMENT_NAME === "production", // Set to true in production (requires HTTPS)
-    sameSite: "none", // Prevents CSRF
-    maxAge: expiryDateInMins * 60 * 1000, // mins in milliseconds
+    httpOnly: true,
+    secure: isProd, // true in production (requires HTTPS)
+    sameSite: isProd ? "none" : "lax",
+    maxAge: expiryDateInMins * 60 * 1000,
   });
 };
 

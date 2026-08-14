@@ -14,6 +14,7 @@ const {
   deleteProduct,
 } = require("./product.controller");
 const { verifyProduct, verifyCarton } = require("./verify.controller");
+const { getLatestDisplay } = require("./display.controller");
 
 module.exports = {
   register,
@@ -29,4 +30,5 @@ module.exports = {
   deleteProduct,
   logout,
   changePassword,
+  getLatestDisplay,
 };

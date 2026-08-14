@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 const cookie = require("cookie-parser");
 const scanRoutes = require("./routes/scan.routes");
+const displayRoutes = require("./routes/display.routes");
 
 const { authRoutes, productRoutes, verifyRoutes } = require("./routes");
 
@@ -28,6 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/verify", verifyRoutes);
 app.use("/api/scan", scanRoutes);
+app.use("/api/display", displayRoutes);
 
 app.get("/", (req, res, next) => {
   res.json({ message: "✅ VerifyIt API is running" });

@@ -1,4 +1,7 @@
 import { useState } from "react";
+import QRScanner from "../components/QRScanner";
+import { useQRScan } from "../hooks/useQRScan";
+import { ScanLine } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Eye,
@@ -19,6 +22,8 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { handleScan } = useQRScan();
+  const [scanning, setScanning] = useState(false);
 
   const onChange = (e) =>
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -164,6 +169,34 @@ export default function Login() {
               )}
             </button>
           </form>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs text-gray-400 font-body">or</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          {/* Scan button */}
+          <button
+            type="button"
+            onClick={() => setScanning(true)}
+            className="w-full flex items-center justify-center gap-2.5 py-3 border-2 border-dashed border-primary-200 rounded-xl text-primary-600 font-semibold text-sm hover:border-primary-400 hover:bg-primary-50 transition-all"
+          >
+            <ScanLine size={18} />
+            Scan a product QR code
+          </button>
+
+          {/* Scanner overlay */}
+          {scanning && (
+            <QRScanner
+              onScan={(text) => {
+                setScanning(false);
+                handleScan(text);
+              }}
+              onClose={() => setScanning(false)}
+            />
+          )}
 
           <p className="text-center text-sm text-gray-400 mt-8 font-body">
             New business?{" "}
