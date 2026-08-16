@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Lightbox } from "../components/UI";
 import {
   CheckCircle2,
   XCircle,
@@ -30,6 +31,7 @@ export default function Verify() {
   const { productId } = useParams();
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lightbox, setLightbox] = useState({ open: false, index: 0 });
   const isCarton = window.location.pathname.includes("/carton");
 
   useEffect(() => {
@@ -57,7 +59,7 @@ export default function Verify() {
     );
 
   const isVerified = result?.verified;
-  const isWarning = isVerified && result.product?.prevScannedAt; // First scan is fine, subsequent scans trigger a warning
+  const isWarning = false; //isVerified && result.product?.prevScannedAt; // First scan is fine, subsequent scans trigger a warning;
   const product = result?.product;
 
   return (
@@ -115,12 +117,13 @@ export default function Verify() {
             <div className="bg-white rounded-2xl shadow-card overflow-hidden mb-4">
               {product.images?.length > 0 && (
                 <div className="flex gap-2 p-4 pb-0 overflow-x-auto">
-                  {product.images.slice(0, 5).map((img, i) => (
+                  {product.images.slice(0, 4).map((img, i) => (
                     <img
                       key={i}
                       src={img}
                       alt=""
-                      className="w-20 h-20 rounded-xl object-cover shrink-0"
+                      onClick={() => setLightbox({ open: true, index: i })}
+                      className="w-20 h-20 rounded-xl object-cover shrink-0 cursor-zoom-in hover:ring-2 hover:ring-white hover:scale-105 transition-all duration-200"
                     />
                   ))}
                 </div>
@@ -231,6 +234,13 @@ export default function Verify() {
           </div>
         </div>
       </main>
+      {lightbox.open && (
+        <Lightbox
+          images={product.images}
+          startIndex={lightbox.index}
+          onClose={() => setLightbox({ open: false, index: 0 })}
+        />
+      )}
     </div>
   );
 }
