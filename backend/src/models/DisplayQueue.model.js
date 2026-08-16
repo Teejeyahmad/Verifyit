@@ -9,6 +9,6 @@ const displayQueueSchema = new mongoose.Schema({
 });
 
 // Auto-delete after 5 minutes — no need to keep stale display data
-displayQueueSchema.index({ scannedAt: 1 }, { expireAfterSeconds: 300 });
+displayQueueSchema.index({ scannedAt: 1 }, { expireAfterSeconds: 10 });
 
 module.exports = mongoose.model("DisplayQueue", displayQueueSchema);
