@@ -1,5 +1,0 @@
-$kind: http-request
-name: Add Product
-url: ""
-method: GET
-order: 1512
