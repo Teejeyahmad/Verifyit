@@ -9,7 +9,7 @@ router.post(
   "/decode",
   express.raw({
     type: ["image/png", "image/jpeg", "image/jpg"],
-    limit: "200kb",
+    limit: "10mb",
   }),
   decodeAndVerify,
 );
