@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     }
   });
   const [loading, setLoading] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     // const token = localStorage.getItem('vi_token');
@@ -35,16 +36,18 @@ export const AuthProvider = ({ children }) => {
   const login = (biz) => {
     //localStorage.setItem('vi_token', token);
     localStorage.setItem("vi_business", JSON.stringify(biz));
+    setLoggingOut(false);
     setBusiness(biz);
   };
 
   const logout = async () => {
+    setLoggingOut(true);
+    localStorage.removeItem("vi_business");
+    setBusiness(null);
     try {
       await api.post("/auth/logout");
     } catch (_) {}
     //localStorage.removeItem('vi_token');
-    localStorage.removeItem("vi_business");
-    setBusiness(null);
   };
 
   const refreshBusiness = async () => {
@@ -57,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ business, loading, login, logout, refreshBusiness }}
+      value={{ business, loading, loggingOut, login, logout, refreshBusiness }}
     >
       {children}
     </AuthContext.Provider>

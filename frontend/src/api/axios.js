@@ -14,16 +14,16 @@ const api = axios.create({
 // });
 
 // Handle 401 globally — redirect to login when token expires
-api.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    let path=window.location.pathname;
-    if (err.response?.status === 401 && (path !== "/login" || path !=="/")) {
-      localStorage.removeItem("vi_business");
-      window.location.href = "/login";
-    }
-    return Promise.reject(err);
-  },
-);
+// api.interceptors.response.use(
+//   (res) => res,
+//   (err) => {
+//     let path=window.location.pathname;
+//     if (err.response?.status === 401 && (path !== "/login" || path !=="/")) {
+//       localStorage.removeItem("vi_business");
+//       window.location.href = "/login";
+//     }
+//     return Promise.reject(err);
+//   },
+// );
 
 export default api;

@@ -1,5 +1,7 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Spinner = () => (
   <div className="min-h-screen flex flex-col items-center justify-center bg-cream gap-4">
@@ -9,9 +11,17 @@ const Spinner = () => (
 );
 
 const ProtectedRoute = ({ children }) => {
-  const { business, loading } = useAuth();
+  const { business, loading, loggingOut } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !business && !loggingOut) {
+      toast.error("You need to login");
+    }
+  }, [business, loading, loggingOut]);
+
   if (loading) return <Spinner />;
-  return business ? children : <Navigate to="/login" replace />;
+  if (business) return children;
+  return <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;
