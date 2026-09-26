@@ -1,7 +1,7 @@
 import { useState } from "react";
 import QRScanner from "../components/QRScanner";
 import { useQRScan } from "../hooks/useQRScan";
-import { ScanLine } from "lucide-react";
+//import { ScanLine } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Eye,
@@ -9,8 +9,8 @@ import {
   Zap,
   ArrowRight,
   ShieldCheck,
-  TrendingUp,
-  Lock,
+  ScanLine,
+  QrCode,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../api/axios";
@@ -48,14 +48,14 @@ export default function Login() {
     <div className="min-h-screen flex bg-cream">
       {/* Left panel — branding */}
       <div className="hidden lg:flex lg:w-5/12 bg-primary-700 flex-col justify-between p-10">
-        <div className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5">
           <div className="w-9 h-9 bg-gold-500 rounded-xl flex items-center justify-center">
             <Zap size={17} className="text-white" />
           </div>
           <span className="text-white font-display font-700 text-xl">
             VerifyIt
           </span>
-        </div>
+        </Link>
 
         <div>
           <h2 className="text-4xl font-display font-800 text-white leading-snug mb-5">
@@ -63,21 +63,25 @@ export default function Login() {
             <br />
             product verification
             <br />
-            <span className="text-gold-300">& fintech platform</span>
+            <span className="text-gold-300">platform</span>
           </h2>
           <p className="text-primary-200 text-base leading-relaxed mb-10 font-body">
-            Authenticate products, protect your customers, and unlock First
-            Bank–powered financing from one dashboard.
+            Register your products, generate secure QR codes, and give your
+            customers instant, reliable authentication — on their phone or at
+            the point of sale.
           </p>
 
           <div className="space-y-4">
             {[
-              { icon: ShieldCheck, text: "QR-powered product authentication" },
+              { icon: QrCode, text: "Unique QR codes for every product" },
               {
-                icon: TrendingUp,
-                text: "Invoice discounting & working capital loans",
+                icon: ScanLine,
+                text: "Instant scan-to-verify, no app required",
               },
-              { icon: Lock, text: "Escrow payments for safe transactions" },
+              {
+                icon: ShieldCheck,
+                text: "Repeat-scan alerts flag potential counterfeits",
+              },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shrink-0">
@@ -92,7 +96,7 @@ export default function Login() {
         </div>
 
         <p className="text-primary-400 text-xs font-body">
-          Powered by First Bank Nigeria · CAC & NAFDAC Verified
+          © {new Date().getFullYear()} VerifyIt. All rights reserved.
         </p>
       </div>
 
