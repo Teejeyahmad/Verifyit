@@ -17,7 +17,8 @@ const api = axios.create({
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401 && window.location.pathname !== "/login") {
+    let path=window.location.pathname;
+    if (err.response?.status === 401 && (path !== "/login" || path !=="/")) {
       localStorage.removeItem("vi_business");
       window.location.href = "/login";
     }
