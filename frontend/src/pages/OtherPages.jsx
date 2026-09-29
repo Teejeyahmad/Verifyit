@@ -974,7 +974,7 @@ export function Profile() {
               {[
                 {
                   label: "Business ID",
-                  value: `...${business?._id?.slice(-8)}`,
+                  value: `...${business?.id?.slice(-8)}`,
                   mono: true,
                 },
                 {

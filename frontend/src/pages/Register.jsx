@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   Upload,
   X,
+  Check,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../api/axios";
@@ -17,6 +18,26 @@ import validator from "validator";
 const steps = ["Business Info", "Regulatory", "Account"];
 
 export default function Register() {
+  const PASSWORD_RULES = [
+    {
+      id: "length",
+      label: "At least 8 characters",
+      test: (p) => p.length >= 8,
+    },
+    {
+      id: "upper",
+      label: "One uppercase letter (A-Z)",
+      test: (p) => /[A-Z]/.test(p),
+    },
+    { id: "number", label: "One number (0-9)", test: (p) => /[0-9]/.test(p) },
+    {
+      id: "special",
+      label: "One special character (!@#$%^&*)",
+      test: (p) => /[^A-Za-z0-9]/.test(p),
+    },
+  ];
+
+  const isStrongPassword = (p) => PASSWORD_RULES.every((rule) => rule.test(p));
   const { login } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
@@ -60,8 +81,8 @@ export default function Register() {
     e.preventDefault();
     if (step === 2 && !validator.isEmail(form.email))
       return toast.error("Invalid email address");
-    if (step === 2 && !validator.isStrongPassword(form.password))
-      return toast.error("Strong Password is required");
+    if (step === 2 && !isStrongPassword(form.password))
+      return toast.error("Password does not meet all requirements");
 
     setLoading(true);
     const fd = new FormData();
@@ -296,7 +317,7 @@ export default function Register() {
                     required
                     className="input pr-12"
                     type={showPass ? "text" : "password"}
-                    placeholder="At least 8 characters"
+                    placeholder="Create a strong password"
                     value={form.password}
                     onChange={(e) => set("password", e.target.value)}
                     autoComplete="new-password"
@@ -309,6 +330,22 @@ export default function Register() {
                     {showPass ? <EyeOff size={17} /> : <Eye size={17} />}
                   </button>
                 </div>
+                <ul className="mt-3 space-y-1.5">
+                  {PASSWORD_RULES.map((rule) => {
+                    const ok = rule.test(form.password);
+                    return (
+                      <li
+                        key={rule.id}
+                        className={`flex items-center gap-2 text-xs font-medium transition-colors ${
+                          ok ? "text-primary-600" : "text-gray-400"
+                        }`}
+                      >
+                        {ok ? <Check size={13} /> : <X size={13} />}
+                        {rule.label}
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
 
               <div className="flex gap-3 mt-2">
@@ -321,7 +358,7 @@ export default function Register() {
                 </button>
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !isStrongPassword(form.password)}
                   className="btn-primary flex-1"
                 >
                   {loading ? (
