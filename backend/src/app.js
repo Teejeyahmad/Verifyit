@@ -14,9 +14,8 @@ app.use(
     origin: [
       "http://10.125.252.46:5173",
       "http://localhost:5173",
-      "https://verifyit-n8gh.vercel.app",
-      "https://verifyit-enk9.vercel.app",
       "https://verifyit.up.railway.app",
+      "https://verifyit2.up.railway.app"
     ], // Replace with your frontend's URL
     credentials: true,
   }),
